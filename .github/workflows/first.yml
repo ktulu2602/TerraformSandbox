@@ -3,7 +3,22 @@ on:
   workflow_dispatch
 
 jobs:
-  apply_code:
+  tf-plan:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Get code
+        uses: actions/checkout@v3
+
+      - name: Get TF
+        uses: hashicorp/setup-terraform@v3
+
+      - name: Init TF Project
+        run: terraform init
+      
+      - name: Plan TF Project
+        run: terraform plan
+
+  tf-apply:
     runs-on: ubuntu-latest
     steps:
       - name: Get code
