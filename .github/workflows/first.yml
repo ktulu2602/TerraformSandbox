@@ -14,6 +14,8 @@ jobs:
 
       - name: Get TF
         uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_wrapper: false
 
       - name: Init TF Project
         run: terraform init
@@ -32,6 +34,8 @@ jobs:
 
       - name: Get TF
         uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_wrapper: false
 
       - name: Init TF Project
         run: terraform init
@@ -43,6 +47,8 @@ jobs:
       - name: Publish TF results output values
         id: tf-output
         run: echo SOMETHING=$(terraform output -json results) >> $GITHUB_OUTPUT
+      
+      - run: echo ${{ steps.tf-output.outputs.SOMETHING }}
   
   another_job:
     needs: tf-apply
