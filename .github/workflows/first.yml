@@ -35,4 +35,15 @@ jobs:
         run: terraform init
       
       - name: Apply TF Project
-        run: terraform apply -auto-approve
+        id: tf-apply
+        run: |
+          terraform apply -auto-approve
+          echo "::set-output name=results::$(terraform output -json results)"
+  
+  another_job:
+    needs: tf-apply
+    runs-on: ubuntu-latest
+    steps:
+      - name: Use Terraform Output
+        run: |
+          echo "Results: ${{ needs.tf-apply.outputs.results }}"
