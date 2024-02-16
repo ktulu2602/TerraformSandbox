@@ -52,6 +52,9 @@ jobs:
     needs: tf-apply
     runs-on: ubuntu-latest
     steps:
+      - name: Get code
+        uses: actions/checkout@v3
+        
       - name: Get Python3
         uses: actions/setup-python@v5
         with:
