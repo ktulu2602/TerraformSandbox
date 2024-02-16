@@ -25,7 +25,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: tf-plan
     outputs:
-      tf-results: $ {{ steps.tf-output.outputs.something }}
+      tf-results: $ {{ steps.tf-output.outputs.SOMETHING }}
     steps:
       - name: Get code
         uses: actions/checkout@v3
@@ -42,7 +42,7 @@ jobs:
       
       - name: Publish TF results output values
         id: tf-output
-        run: something=$(terraform output -json results) >> $GITHUB_OUTPUT
+        run: echo SOMETHING=$(terraform output -json results) >> $GITHUB_OUTPUT
   
   another_job:
     needs: tf-apply
