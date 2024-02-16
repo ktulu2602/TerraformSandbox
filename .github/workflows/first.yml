@@ -24,6 +24,8 @@ jobs:
   tf-apply:
     runs-on: ubuntu-latest
     needs: tf-plan
+    outputs:
+      tf-results: $ {{ steps.tf-output.outputs.something }}
     steps:
       - name: Get code
         uses: actions/checkout@v3
@@ -35,10 +37,12 @@ jobs:
         run: terraform init
       
       - name: Apply TF Project
-        id: tf-apply
         run: |
           terraform apply -auto-approve
-          echo "::set-output name=results::$(terraform output -json results)"
+      
+      - name: Publish TF results output values
+        id: tf-output
+        run: something=$(terraform output -json resource_ids) >> $GITHUB_OUTPUT
   
   another_job:
     needs: tf-apply
@@ -46,4 +50,4 @@ jobs:
     steps:
       - name: Use Terraform Output
         run: |
-          echo "Results: ${{ needs.tf-apply.outputs.results }}"
+          echo "Results: ${{ needs.tf-apply.outputs.tf-results }}"
