@@ -48,12 +48,16 @@ jobs:
         id: tf-output-step
         run: echo "SOMETHING=$(terraform output -json results)" >> "$GITHUB_OUTPUT"
   
-  another_job:
+  run_python_script:
     needs: tf-apply
     runs-on: ubuntu-latest
     steps:
+      - name: Get Python3
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10' 
       - name: Use Terraform Output
         env:
           TF_APPLY_RESULTS: ${{needs.tf-apply.outputs.tf-results}}
         run: |
-          echo "Results: $TF_APPLY_RESULTS"
+          python src/script.py
