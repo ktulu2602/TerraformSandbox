@@ -42,7 +42,7 @@ jobs:
       
       - name: Publish TF results output values
         id: tf-output
-        run: something=$(terraform output -json resource_ids) >> $GITHUB_OUTPUT
+        run: something=$(terraform output -json results) >> $GITHUB_OUTPUT
   
   another_job:
     needs: tf-apply
