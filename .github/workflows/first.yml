@@ -11,8 +11,5 @@ jobs:
       - name: Init TF Project
         run: terraform init
       
-      - name: Plan TF Project
-        run: terraform plan
-      
       - name: Apply TF Project
         run: terraform apply -auto-approve
