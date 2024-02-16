@@ -46,7 +46,7 @@ jobs:
       
       - name: Publish TF results output values
         id: tf-output
-        run: echo SOMETHING=$(terraform output -json results) >> $GITHUB_OUTPUT
+        run: echo "SOMETHING=$(terraform output -json results)" >> "$GITHUB_OUTPUT"
       
       - run: echo ${{ steps.tf-output.outputs.SOMETHING }}
   
@@ -55,5 +55,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Use Terraform Output
+        env:
+          APPLY_RESULTS: ${{needs.tf-apply.outputs.tf-results}}
         run: |
-          echo "Results: ${{ needs.tf-apply.outputs.tf-results }}"
+          echo "Results: $APPLY_RESULTS"
