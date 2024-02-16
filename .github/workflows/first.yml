@@ -3,10 +3,14 @@ on:
   workflow_dispatch
 
 jobs:
-  install_depedencies:
+  apply_code:
     runs-on: ubuntu-latest
     steps:
-      - uses: hashicorp/setup-terraform@v3
+      - name: Get code
+        uses: actions/checkout@v3
+
+      - name: Get TF
+        uses: hashicorp/setup-terraform@v3
 
       - name: Init TF Project
         run: terraform init
