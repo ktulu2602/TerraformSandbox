@@ -1,0 +1,55 @@
+# trigger_github_workflow.yml
+- name: Trigger GitHub Actions Workflow
+  hosts: localhost
+  gather_facts: false
+  vars:
+    github_owner: "dragosstan2602"
+    github_repo: "TerraformSandbox"
+    github_token: "{{ lookup('env', 'GITHUB_TOKEN') }}"
+    workflow_id: "triggered-workflow.yml"
+  tasks:
+    - name: Trigger GitHub Actions via repository_dispatch event
+      ansible.builtin.uri:
+        url: "https://api.github.com/repos/{{ github_owner }}/{{ github_repo }}/dispatches"
+        method: POST
+        headers:
+          Authorization: "token {{ github_token }}"
+          Accept: "application/vnd.github.v3+json"
+        body: |
+          {
+            "event_type": "ansible-trigger",
+            "client_payload": {}
+          }
+        status_code: 204
+
+    - name: Get the latest workflow run ID
+      ansible.builtin.uri:
+        url: "https://api.github.com/repos/{{ github_owner }}/{{ github_repo }}/actions/runs"
+        method: GET
+        headers:
+          Authorization: "token {{ github_token }}"
+          Accept: "application/vnd.github.v3+json"
+        status_code: 200
+      register: workflow_runs
+
+    - name: Set workflow run ID
+      ansible.builtin.set_fact:
+        workflow_run_id: "{{ workflow_runs.json.workflow_runs[0].id }}"
+
+    - name: Poll workflow status
+      ansible.builtin.uri:
+        url: "https://api.github.com/repos/{{ github_owner }}/{{ github_repo }}/actions/runs/{{ workflow_run_id }}"
+        method: GET
+        headers:
+          Authorization: "token {{ github_token }}"
+          Accept: "application/vnd.github.v3+json"
+        status_code: 200
+      register: workflow_status
+      retries: 10
+      delay: 10
+      until: workflow_status.json.conclusion != null
+
+    - name: Fail if workflow failed
+      ansible.builtin.fail:
+        msg: "GitHub Actions workflow failed"
+      when: workflow_status.json.conclusion != 'success'

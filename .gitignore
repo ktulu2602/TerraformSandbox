@@ -3,6 +3,5 @@
 *.tfstate*
 *.txt
 .venv
-gha_pb.yaml
 .vscode
 .vscode/*
