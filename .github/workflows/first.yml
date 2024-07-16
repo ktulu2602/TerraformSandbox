@@ -1,9 +1,11 @@
 name: Basic Workflow
 on:
   workflow_dispatch:
-  push:
-    branches:
-      - main
+  repository_dispatch:
+    types: [ansible-trigger]
+  # push:
+  #   branches:
+  #     - main
 
 jobs:
   tf-plan:
@@ -48,19 +50,19 @@ jobs:
         id: tf-output-step
         run: echo "SOMETHING=$(terraform output -json results)" >> "$GITHUB_OUTPUT"
   
-  run_python_script:
-    needs: tf-apply
-    runs-on: ubuntu-latest
-    steps:
-      - name: Get code
-        uses: actions/checkout@v3
+  # run_python_script:
+  #   needs: tf-apply
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: Get code
+  #       uses: actions/checkout@v3
         
-      - name: Get Python3
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.10' 
-      - name: Use Terraform Output
-        env:
-          TF_APPLY_RESULTS: ${{needs.tf-apply.outputs.tf-results}}
-        run: |
-          python src/script.py
+  #     - name: Get Python3
+  #       uses: actions/setup-python@v5
+  #       with:
+  #         python-version: '3.10' 
+  #     - name: Use Terraform Output
+  #       env:
+  #         TF_APPLY_RESULTS: ${{needs.tf-apply.outputs.tf-results}}
+  #       run: |
+  #         python src/script.py
