@@ -7,13 +7,13 @@ resource "local_file" "example" {
   content  = "Hello, Terraform!"
 }
 
-# resource "null_resource" "fail_apply" {
-#   provisioner "local-exec" {
-#     command = "exit 1"
-#     # This will always fail, causing the apply phase to fail.
-#   }
+resource "null_resource" "fail_apply" {
+  provisioner "local-exec" {
+    command = "exit 1"
+    # This will always fail, causing the apply phase to fail.
+  }
 
-#   triggers = {
-#     always_run = "${timestamp()}"
-#   }
-# }
+  triggers = {
+    always_run = "${timestamp()}"
+  }
+}
