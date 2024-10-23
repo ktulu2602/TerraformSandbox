@@ -8,15 +8,15 @@ resource "local_file" "example" {
 }
 
 resource "null_resource" "fail_apply" {
-  provisioner "local-exec" {
-    command = "exit 0"
-    # This will always succeed, causing the apply phase to succeed.
-  }
-
   # provisioner "local-exec" {
-  #   command = "exit 1"
-    # This will always fail, causing the apply phase to fail.
+  #   command = "exit 0"
+    # This will always succeed, causing the apply phase to succeed.
   # }
+
+  provisioner "local-exec" {
+    command = "exit 1"
+    # This will always fail, causing the apply phase to fail.
+  }
 
   triggers = {
     always_run = "${timestamp()}"
